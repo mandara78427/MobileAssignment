@@ -13,19 +13,19 @@ class ApiService : NSObject {
     private let sourcesURL = URL(string: "https://api.restful-api.dev/objects")!
     
     func fetchDeviceDetails(completion : @escaping ([DeviceData]) -> ()){
-        URLSession.shared.dataTask(with: sourcesURL) { (data, urlResponse, error) in
+        URLSession.shared.dataTask(with: sourcesURL) { data, urlResponse, error in
             if let error = error {
                 print("Network error: \(error.localizedDescription)")
                 completion([]) // Return an empty array on network failure
                 return
             }
-            
-            if let data = data {
+            do {
                 let jsonDecoder = JSONDecoder()
-                let empData = try! jsonDecoder.decode([DeviceData].self, from: data)
-                if (empData.isEmpty) {
-                    completion([])
-                }
+                let empData = try jsonDecoder.decode([DeviceData].self, from: data!)
+                completion(empData)
+                //                }
+            } catch {
+                print(error.localizedDescription)
             }
         }.resume()
     }

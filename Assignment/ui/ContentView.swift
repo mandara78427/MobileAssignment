@@ -14,7 +14,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack(path: $path) {
             Group {
-                if let computers = viewModel.data, !computers.isEmpty {
+                if let computers = viewModel.data {
                     DevicesList(devices: computers) { selectedComputer in
                         viewModel.navigateToDetail(navigateDetail: selectedComputer)
                     }
@@ -31,6 +31,7 @@ struct ContentView: View {
                 DetailView(device: computer)
             }
             .onAppear {
+                viewModel.fetchAPI()
                 let navigate = viewModel.navigateDetail
                 if (navigate != nil) {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
